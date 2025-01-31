@@ -1,5 +1,5 @@
 'use client'
-import { useState ,useRef} from 'react';
+import { useState } from 'react'
 import { motion } from 'framer-motion';
 
 const Portfolio = () => {
@@ -34,7 +34,42 @@ const Portfolio = () => {
     }
   };
 
+  const scaleIn = {
+    hidden: { scale: 0.9, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        bounce: 0.4,
+        duration: 0.8
+      }
+    }
+  };
 
+  const slideIn = {
+    hidden: { x: -60, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        bounce: 0.4,
+        duration: 0.8
+      }
+    }
+  };
+
+  const cardHover = {
+    hover: {
+      scale: 1.02,
+      transition: {
+        type: "spring",
+        bounce: 0.4,
+        duration: 0.5
+      }
+    }
+  };
   // Previous projects and skills data remain the same...
   const projects = [
     {
@@ -102,143 +137,6 @@ const Portfolio = () => {
     "Recommended automated compliance checks using policy-as-code frameworks for consistent cloud resource management.",
     "Promoted multi-cloud security best practices, including encryption, vulnerability patching, and MFA for critical resources."
   ];
-
-  const ExperienceCard = ({ experience, isDarkMode }) => {
-    return (
-      <motion.div
-        initial={{ x: 100, opacity: 0 }}
-        whileInView={{ x: 0, opacity: 1 }}
-        viewport={{ once: true, margin: "-100px" }}
-        whileHover={{ scale: 1.02 }}
-        transition={{
-          type: "spring",
-          stiffness: 50,
-          damping: 20
-        }}
-        className={`
-          flex-shrink-0 
-          w-[300px] md:w-[400px] lg:w-[500px] 
-          p-6 rounded-xl 
-          shadow-lg 
-          ${isDarkMode ? 'bg-gray-700' : 'bg-gray-100'}
-          transition-all duration-300
-        `}
-      >
-        <p className="text-base md:text-lg leading-relaxed"> {experience}</p>
-      </motion.div>
-    );
-  };
-  
-  // Experience Section Component
-  const ExperienceSection = ({ experiences, isDarkMode }) => {
-    const containerRef = useRef(null);
-  
-    const scrollLeft = () => {
-      if (containerRef.current) {
-        containerRef.current.scrollBy({
-          left: -500,
-          behavior: 'smooth'
-        });
-      }
-    };
-  
-    const scrollRight = () => {
-      if (containerRef.current) {
-        containerRef.current.scrollBy({
-          left: 500,
-          behavior: 'smooth'
-        });
-      }
-    };
-  
-    return (
-      <div className="relative">
-        <h4 className="text-xl font-semibold mb-6">Combined Experience</h4>
-        
-        {/* Navigation Buttons */}
-        <div className="hidden md:flex justify-between absolute top-1/2 -translate-y-1/2 left-0 right-0 z-10 pointer-events-none">
-          <button
-            onClick={scrollLeft}
-            className={`
-              pointer-events-auto
-              w-12 h-12 
-              rounded-full 
-              flex items-center justify-center 
-              ${isDarkMode ? 'bg-gray-800' : 'bg-white'} 
-              shadow-lg 
-              transform -translate-x-6
-              transition-all 
-              hover:scale-110
-            `}
-          >
-            ←
-          </button>
-          <button
-            onClick={scrollRight}
-            className={`
-              pointer-events-auto
-              w-12 h-12 
-              rounded-full 
-              flex items-center justify-center 
-              ${isDarkMode ? 'bg-gray-800' : 'bg-white'} 
-              shadow-lg 
-              transform translate-x-6
-              transition-all 
-              hover:scale-110
-            `}
-          >
-            →
-          </button>
-        </div>
-  
-        {/* Scrollable Container */}
-        <div
-          ref={containerRef}
-          className="
-            flex 
-            gap-6 
-            overflow-x-auto 
-            pb-6 
-            scrollbar-hide
-            scroll-smooth
-            snap-x 
-            snap-mandatory
-            -mx-6 
-            px-6
-          "
-          style={{
-            WebkitOverflowScrolling: 'touch',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none'
-          }}
-        >
-          {experiences.map((experience, index) => (
-            <div key={index} className="snap-start">
-              <ExperienceCard experience={experience} isDarkMode={isDarkMode} />
-            </div>
-          ))}
-        </div>
-  
-        {/* Scroll Indicator */}
-        <div className="mt-4 flex justify-center gap-2">
-          {experiences.map((_, index) => (
-            <div
-              key={index}
-              className={`
-                w-2 h-2 
-                rounded-full 
-                transition-all 
-                ${index === 0 ? 
-                  (isDarkMode ? 'bg-white' : 'bg-gray-800') : 
-                  (isDarkMode ? 'bg-gray-600' : 'bg-gray-300')
-                }
-              `}
-            />
-          ))}
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
@@ -379,11 +277,23 @@ const Portfolio = () => {
 
             {/* Combined Experience - Improved readability */}
             <div className="space-y-8">
-      <ExperienceSection 
-        experiences={experiences} 
-        isDarkMode={isDarkMode} 
-      />
-    </div>
+              <h4 className="text-xl font-semibold mb-6">Combined Experience</h4>
+              <motion.div 
+                variants={staggerContainer}
+                className="grid gap-6"
+              >
+                {experiences.map((experience, index) => (
+                  <motion.div
+                    key={index}
+                    variants={fadeInUp}
+                    whileHover={{ x: 10 }}
+                    className={`p-6 rounded-lg text-lg leading-relaxed ${isDarkMode ? 'bg-gray-700' : 'bg-gray-100'}`}
+                  >
+                    • {experience}
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
           </motion.div>
         </div>
       </motion.section>
